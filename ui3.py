@@ -4,12 +4,12 @@ from datetime import datetime
 import tkinter as tk
 from tkinter import ttk, messagebox, simpledialog
 
-# Импортируем современную библиотеку интерфейса
+
 import customtkinter as cctk
 
-# Устанавливаем общую тему оформления
-cctk.set_appearance_mode("System")  # "System", "Dark", "Light"
-cctk.set_default_color_theme("blue")  # "blue", "green", "dark-blue"
+
+cctk.set_appearance_mode("System")
+cctk.set_default_color_theme("blue")
 
 
 class ModernFileManager(cctk.CTk):
@@ -20,7 +20,6 @@ class ModernFileManager(cctk.CTk):
         self.geometry("1000x650")
         self.minsize(800, 500)
 
-        # Логика и буфер обмена
         self.current_dir = os.path.abspath(os.getcwd())
         self.clipboard_path = None
         self.clipboard_action = None
@@ -30,13 +29,10 @@ class ModernFileManager(cctk.CTk):
         self.load_directory(self.current_dir)
 
     def setup_ui(self):
-        # Настройка сетки (Grid) для главного окна
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(1, weight=1)
 
-        # ==========================================
-        # 1. ВЕРХНЯЯ ПАНЕЛЬ (Навигация)
-        # ==========================================
+
         self.nav_frame = cctk.CTkFrame(self, corner_radius=0, height=60)
         self.nav_frame.grid(row=0, column=0, columnspan=2, sticky="nsew", padx=0, pady=0)
         self.nav_frame.grid_propagate(False)
@@ -52,9 +48,7 @@ class ModernFileManager(cctk.CTk):
                                      command=lambda: self.load_directory(self.path_entry.get()))
         self.btn_go.pack(side=tk.LEFT, padx=15, pady=15)
 
-        # ==========================================
-        # 2. БОКОВАЯ ПАНЕЛЬ (Быстрый доступ)
-        # ==========================================
+
         self.sidebar_frame = cctk.CTkFrame(self, corner_radius=0, width=180)
         self.sidebar_frame.grid(row=1, column=0, sticky="nsew")
         self.sidebar_frame.grid_propagate(False)
@@ -63,7 +57,6 @@ class ModernFileManager(cctk.CTk):
                                         text_color="gray")
         label_shortcuts.pack(anchor="w", padx=15, pady=(20, 10))
 
-        # Кнопки быстрого перехода к стандартным папкам пользователя
         user_home = os.path.expanduser("~")
         shortcuts = [
             ("Домашняя", user_home),
@@ -79,14 +72,10 @@ class ModernFileManager(cctk.CTk):
                                      command=lambda p=path: self.load_directory(p))
                 btn.pack(fill=tk.X, padx=10, pady=2)
 
-        # ==========================================
-        # 3. ЦЕНТРАЛЬНАЯ ЧАСТЬ (Таблица Treeview)
-        # ==========================================
-        # Стилизуем стандартный Treeview под темную/светлую тему CustomTkinter
+
         style = ttk.Style()
         style.theme_use("clam")
 
-        # Определяем цвета в зависимости от темы
         is_dark = cctk.get_appearance_mode() == "Dark"
         bg_color = "#2a2a2a" if is_dark else "#ffffff"
         fg_color = "#ffffff" if is_dark else "#000000"
@@ -121,14 +110,10 @@ class ModernFileManager(cctk.CTk):
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         self.tree.bind("<Double-1>", self.on_double_click)
 
-        # ==========================================
-        # 4. НИЖНЯЯ ПАНЕЛЬ (Действия и Статус)
-        # ==========================================
         self.bottom_frame = cctk.CTkFrame(self, corner_radius=0, height=80)
         self.bottom_frame.grid(row=2, column=0, columnspan=2, sticky="nsew")
         self.bottom_frame.grid_propagate(False)
 
-        # Кнопки управления операциями
         cctk.CTkButton(self.bottom_frame, text="Новая папка", width=110, command=self.create_folder).pack(side=tk.LEFT,
                                                                                                           padx=10,
                                                                                                           pady=15)
@@ -144,7 +129,6 @@ class ModernFileManager(cctk.CTk):
         cctk.CTkButton(self.bottom_frame, text="Обновить", width=90, fg_color="gray40", hover_color="gray30",
                        command=self.refresh).pack(side=tk.RIGHT, padx=15, pady=15)
 
-        # Статус-бар буфера обмена
         self.status_label = cctk.CTkLabel(self.bottom_frame, text="Буфер обмена пуст", font=("Segoe UI", 12),
                                           text_color="gray")
         self.status_label.pack(side=tk.RIGHT, padx=20)
@@ -155,7 +139,6 @@ class ModernFileManager(cctk.CTk):
         self.bind('<Control-v>', lambda e: self.paste_from_clipboard())
         self.bind('<Delete>', lambda e: self.delete_item())
 
-    # --- Основная логика работы с файлами ---
     def load_directory(self, path):
         try:
             if not os.path.isdir(path):
@@ -248,7 +231,6 @@ class ModernFileManager(cctk.CTk):
             except Exception as e:
                 messagebox.showerror("Ошибка", f"Не удалось удалить элемент:\n{e}")
 
-    # --- Поддержка Копирования и Перемещения деревьев ---
     def copy_to_clipboard(self):
         path = self.get_selected_path()
         if path:
